@@ -1,12 +1,15 @@
+from django.db import IntegrityError
 from django.shortcuts import render
 
 # Create your views here.
+from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.generics import ListCreateAPIView, get_object_or_404, RetrieveUpdateDestroyAPIView
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from serializers import serializer
-
+from .models import NewsStatus, CommentStatus
 from news.models import News, Comment, Status
 from news.permissions import IsAuthorPermission
 from news.serializers import NewsSerializer, CommentSerializer, StatusSerializer
@@ -127,3 +130,21 @@ class StatusRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         user = serializer.save()
         if user:
             Status.objects.create(user=user, is_staff=True)
+
+class NewsAddStatus(APIView):
+    def get(self, request, new_id, slug):
+        news = get_object_or_404(News, id=new_id)
+        news_status = get_object_or_404(Status, slug=slug)
+        try:
+            add_status = NewsStatus.objects.create(news=news, user=request.user)
+        except IntegrityError:
+            add_news_status = NewsStatus.objects.get(news=news, user=request.user)
+            add_news_status.status = news_status
+            add_news_status.save()
+            data = {"error You already added status"}
+            return Response(data, status.HTTP_403_FORBIDDEN)
+        else:
+            data = {"message Status added"}
+            return Response(data, status=status.HTTP_201_CREATED)
+
+

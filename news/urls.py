@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/news/<news_id>/comments/<int:pk>/', views.CommentRetrieveUpdateDestroyAPIView.as_view()),
     path('api/statuses/', views.StatusListCreateAPIView.as_view()),
     path('api/statuses/<pk>', views.StatusRetrieveUpdateDestroyAPIView.as_view()),
+    path('api/news/<new_id>/<slug>/', views.NewsAddStatus.as_view()),
 
 ]
 
