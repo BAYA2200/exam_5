@@ -1,28 +1,27 @@
-import serializers as serializers
 from rest_framework import serializers
 
 from news.models import News, Comment, Status
 
 
 class NewsSerializer(serializers.ModelSerializer):
-    title = serializers.ModelSerializer()
-    content = serializers.ReadOnlyField()
+    get_status = serializers.ReadOnlyField()
 
     class Meta:
         model = News
         fields = "__all__"
+        read_only_fields = ('author',)
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    text = serializers.ReadOnlyField()
+    get_status = serializers.ReadOnlyField()
 
     class Meta:
         model = Comment
         fields = "__all__"
+        read_only_fields = ('news', 'author')
 
 
 class StatusSerializer(serializers.ModelSerializer):
-    text = serializers.ReadOnlyField()
 
     class Meta:
         model = Status

@@ -20,7 +20,7 @@ class News(models.Model):
         for i in statuses:
             result[i['status__name']] = i['count']
 
-            return result
+        return result
 
 
 class Comment(models.Model):
